@@ -10,7 +10,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.index.Index;
+//import org.neo4j.graphdb.index.Index;
 
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.IndexManager;
@@ -18,7 +18,11 @@ import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.Config;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
+import com.tinkerpop.blueprints.pgm.AutomaticIndex;
+import com.tinkerpop.blueprints.pgm.Edge;
+import com.tinkerpop.blueprints.pgm.Index;
 import com.tinkerpop.blueprints.pgm.Vertex;
+import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jVertex;
 import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
 import com.tinkerpop.blueprints.pgm.impls.sail.SailGraph;
 import com.tinkerpop.blueprints.pgm.oupls.sail.GraphSail;
@@ -26,6 +30,7 @@ import com.tinkerpop.blueprints.pgm.oupls.sail.GraphSail;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,11 +64,21 @@ public class sparql_test {
 		registerShutdownHook( neo );
 		final GraphSail gsail = new GraphSail(neo);
 		final SailGraph sail  = new SailGraph(gsail);
-		String query = "SELECT ?x WHERE {?x ?y ?z} LIMIT 10";
+		Index<Vertex> vIndex = 	neo.getIndex(Index.VERTICES, Vertex.class);
 		
-		List<Map<String, Vertex>> results = sparqlQuest(query, sail);
+		Iterable<Vertex> results = vIndex.get("value", "http://dbpedia.org/resource/Autism");
+		Iterator<Vertex> vIterator = results.iterator();
+		while ( vIterator.hasNext() ){
+
+			System.out.println("in the loop");
+			System.out.println(vIterator.next().getProperty("value") );
+		}
+		String query = "SELECT ?y ?z WHERE {<http://dbpedia.org/resource/Autism> ?y ?z} LIMIT 10";
 		
-		System.out.println(results);
+		List<Map<String, Vertex>> s_results = sparqlQuest(query, sail);
+		
+		System.out.println("Full results iterator = " + results);
+		System.out.println("Full sparql results = " + s_results);
 		
 		neo.shutdown();
 		
