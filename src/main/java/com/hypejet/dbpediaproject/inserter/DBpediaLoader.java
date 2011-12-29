@@ -33,7 +33,7 @@ import com.tinkerpop.blueprints.pgm.impls.neo4jbatch.Neo4jBatchEdge;
 
 public class DBpediaLoader 
 {
-    private static final String LOAD_FROM_DIR = "/Users/rogueleaderr/Data/smallo_dir";
+    private static final String LOAD_FROM_DIR = "/Users/rogueleaderr/Data/test_files_dir";
     private static final String DB_DIR = "/Users/rogueleaderr/Data/var/dbpedia4neo_test_upload";
 	
 	public static void main( String[] args ) throws Exception

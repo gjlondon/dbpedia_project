@@ -25,7 +25,7 @@ public class IndexAdder {
 	public static void main( String[] args ) throws Exception{
 		
 		Map<String, String> config = new HashMap<String, String>();
-		config.put( Config.NODE_KEYS_INDEXABLE, "value" );
+		config.put( Config.NODE_KEYS_INDEXABLE, "name" );
 		config.put( Config.NODE_AUTO_INDEXING, "true" );
 		
 		EmbeddedGraphDatabase graphDb = new EmbeddedGraphDatabase(
@@ -34,29 +34,16 @@ public class IndexAdder {
 		
 		ReadableIndex<Node> autoNodeIndex = graphDb.index().getNodeAutoIndexer().getAutoIndex();
 		System.out.println("ABout to check the index " + autoNodeIndex.getEntityType());
-		Iterator<Node> results = autoNodeIndex.query("value", "*").iterator();
+		Iterator<Node> results = autoNodeIndex.query("name", "http://dbpedia.org/resource/Autism").iterator();
 		 
 		while ( results.hasNext() ){
 
 			Node node = results.next();
 			System.out.println("in the loop");
-			System.out.println(node.getProperty("value") );
+			System.out.println(node.getProperty("name") );
 						
 		}
-		
-		/*Transaction tx = graphDb.beginTx();
-		try{
-			tx.success();
-		}
-		catch ( Exception e)
-		{
-			tx.failure();
-		}
-		finally
-		{
-			tx.finish();
-		}
-		*/
+
 	}
 	
 	private static void registerShutdownHook( final EmbeddedGraphDatabase graphDb )
