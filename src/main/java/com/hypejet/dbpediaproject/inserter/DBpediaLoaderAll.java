@@ -31,28 +31,26 @@ import com.tinkerpop.blueprints.pgm.impls.neo4jbatch.Neo4jBatchVertex;
 import com.tinkerpop.blueprints.pgm.impls.neo4jbatch.Neo4jBatchEdge;
 
 
-public class DBpediaLoader 
+public class DBpediaLoaderAll 
 {
     private static final String LOAD_FROM_DIR = "/Users/rogueleaderr/Data/smallo_dir";
-    private static final String DB_DIR = "/Users/rogueleaderr/Data/var/dbpedia4neo_small_test_2";
-	
+    private static final String DB_DIR = "/Users/rogueleaderr/Data/var/dbpedia4neo_onto_new";
+    private static boolean indices_exist;
+    
 	public static void main( String[] args ) throws Exception
     	
     {
 
-    	File dir = new File(LOAD_FROM_DIR);
-    	String[] fileList = dir.list();
-		
-    	Neo4jBatchGraph neo = new Neo4jBatchGraph(DB_DIR);
-    	neo.createAutomaticIndex(Index.VERTICES, Vertex.class, null);
-        neo.createAutomaticIndex(Index.EDGES, Edge.class, null);
-    	registerShutdownHook( neo );
+		Neo4jBatchGraph neo = new Neo4jBatchGraph(DB_DIR);
+		registerShutdownHook( neo );
+	//	neo.createAutomaticIndex(Index.VERTICES, Vertex.class, null);
+    //	neo.createAutomaticIndex(Index.EDGES, Edge.class, null);
     	Sail sail = new GraphSail(neo);
-    	sail.initialize();
-    	SailRepositoryConnection connection;
-		long start = System.currentTimeMillis();
-		connection = new SailRepository( sail ).getConnection();
-		
+    	sail.initialize();	
+	    
+	    File dir = new File(LOAD_FROM_DIR);
+    	String[] fileList = dir.list();
+  	
     	try{
 	    	if (dir.isDirectory()){
 	    		for (String child : fileList) {
@@ -60,26 +58,51 @@ public class DBpediaLoader
 	    			      continue;  // Ignore the self and parent aliases.
 	    			    }
 	    			
-
-	    			File childFile = new File(LOAD_FROM_DIR + "/" + child);
 	    			System.out.println("Loading " + child + ": ");
-	    			connection.add( childFile, null, RDFFormat.NTRIPLES);
-
-	    			long duration = System.currentTimeMillis() - start;
-	    			System.out.println("Duration of import: " + duration);
-   			
+	    			File childFile = new File(LOAD_FROM_DIR + "/" + child);
+	    			addFileToDB(childFile, neo, sail);  
+	    			break;
 	        	}	
+	    	
 	    	}
     	}
-    	catch ( RepositoryException e1 )
+    	catch ( Exception e1 )
         {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-		connection.close();
-    	sail.shutDown();
-    	neo.shutdown();     
+		sail.shutDown();
+		neo.shutdown();
     }
+	
+	private static void addFileToDB(File childFile, Neo4jBatchGraph neo, Sail sail) throws RepositoryException, SailException{
+		
+		//Neo4jBatchGraph neo = new Neo4jBatchGraph(DB_DIR);
+		//registerShutdownHook( neo );
+		
+       
+    	SailRepositoryConnection connection;
+   		
+   		
+		long start = System.currentTimeMillis();
+		connection = new SailRepository( sail ).getConnection();		
+
+		try{
+				connection.add( childFile, null, RDFFormat.NTRIPLES);
+		}
+		catch ( Exception e1)
+        {
+            e1.printStackTrace();
+        }
+
+		long duration = System.currentTimeMillis() - start;
+		System.out.println("Duration of import: " + duration);
+		connection.close();
+    	
+
+	//	neo.shutdown();	
+			
+	}
 	private static void registerShutdownHook( final Neo4jBatchGraph graphDb )
 	{
 	    // Registers a shutdown hook for the Neo4j instance so that it

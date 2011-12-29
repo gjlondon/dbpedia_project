@@ -90,11 +90,6 @@
 			<version>2.5</version>
 		</dependency>
 		<dependency>
-   			<groupId>com.tinkerpop.blueprints</groupId>
-   			<artifactId>blueprints-neo4j-graph</artifactId>
-   			<version>${TinkerPopVersion}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.tinkerpop.blueprints</groupId>
 			<artifactId>blueprints-graph-sail</artifactId>
 			<version>${TinkerPopVersion}</version>
@@ -103,32 +98,15 @@
 			<groupId>com.tinkerpop.blueprints</groupId>
 			<artifactId>blueprints-sail-graph</artifactId>
 			<version>${TinkerPopVersion}</version>
-		</dependency>
-		<dependency>
-   			<groupId>com.tinkerpop.blueprints</groupId>
-   			<artifactId>blueprints-neo4jbatch-graph</artifactId>
-   			<version>${TinkerPopVersion}</version>
 		</dependency>	
-		<dependency>
-  			<groupId>com.tinkerpop.blueprints</groupId>
-  			<artifactId>blueprints-core</artifactId>
-  			<version>${TinkerPopVersion}</version>
-		</dependency>
-		
 	
   </dependencies>
-
 	<repositories>
 		<repository>
-			<id>tinkerpop-repository</id>
-			<name>TinkerPop Maven2 Repository</name>
-			<url>http://tinkerpop.com/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
+		   <id>tinkerpop-repository</id>
+		   <name>TinkerPop Maven2 Repository</name>
+		   <url>http://tinkerpop.com/maven2</url>
 		</repository>
-
 		<repository>
 			<id>openrdf</id>
 			<name>openrdf</name>

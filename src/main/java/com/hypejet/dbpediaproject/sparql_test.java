@@ -38,19 +38,6 @@ import java.util.Map.Entry;
 // author rogueleaderr
  
 public class sparql_test {
-
-	static String beans;
-	/**
-	 * @param args
-	 */
-	public sparql_test(){
-		this.beans = "beans!";
-	}
-	
-	private static enum RelTypes implements RelationshipType
-	{
-	    KNOWS
-	}
 	
 	private static List<Map<String,Vertex>> sparqlQuest (String query, SailGraph sail)
 	{
@@ -60,7 +47,7 @@ public class sparql_test {
 	}
 	public static void main(String[] args) {
 		
-		final Neo4jGraph neo  = new Neo4jGraph("/Users/rogueleaderr/Data/var/dbpedia4neo_small_test");
+		final Neo4jGraph neo  = new Neo4jGraph("/Users/rogueleaderr/Data/var/dbpedia4neo_onto_new_all");
 		registerShutdownHook( neo );
 		final GraphSail gsail = new GraphSail(neo);
 		final SailGraph sail  = new SailGraph(gsail);
@@ -70,15 +57,26 @@ public class sparql_test {
 		Iterator<Vertex> vIterator = results.iterator();
 		while ( vIterator.hasNext() ){
 
+			Vertex vertex = vIterator.next();
 			System.out.println("in the loop");
-			System.out.println(vIterator.next().getProperty("value") );
+			System.out.println(vertex.getProperty("value") );
+			Iterator<Edge> outEdges = vertex.getOutEdges().iterator();
+			while (outEdges.hasNext()){
+				System.out.println(outEdges.next());
+			}
+			
 		}
-		String query = "SELECT ?y ?z WHERE {<http://dbpedia.org/resource/Autism> ?y ?z} LIMIT 10";
+		
+		String query = "SELECT DISTINCT ?x ?z WHERE {?x <http://dbpedia.org/ontology/knownFor> ?z}";
 		
 		List<Map<String, Vertex>> s_results = sparqlQuest(query, sail);
+		int counter = 0;
+		for (Map<String, Vertex> element : s_results){
+			counter++;
+			System.out.println("#"+counter+" sparql results = " + element);	
+		}
+		//System.out.println("Full results iterator = " + results);
 		
-		System.out.println("Full results iterator = " + results);
-		System.out.println("Full sparql results = " + s_results);
 		
 		neo.shutdown();
 		

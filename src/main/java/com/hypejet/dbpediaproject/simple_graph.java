@@ -74,7 +74,7 @@ public class simple_graph {
 		config.put( "RELATIONSHIP_AUTO_INDEXING", "true" );
 		*/
 		
-		final Neo4jGraph neo  = new Neo4jGraph("/Users/rogueleaderr/Data/var/dbpedia4neo_onto_back");
+		final Neo4jGraph neo  = new Neo4jGraph("/Users/rogueleaderr/Data/var/dbpedia4neo_scheme_test");
 		final GraphSail gsail = new GraphSail(neo);
 		final SailGraph sail  = new SailGraph(gsail);
 		String query = "SELECT ?x WHERE {?x ?y ?z} LIMIT 10";
